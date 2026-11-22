@@ -2,6 +2,8 @@
 
 This file says **what we build, in what order, and when each phase is finished**. The idea and the reasons are in [PLAN.md](PLAN.md).
 
+> **For building, follow [BUILD_PHASES.md](BUILD_PHASES.md).** It uses smaller phases with different numbers. Use this older file for team tasks and detailed tests only.
+
 **Status: not started.** Day 1 is the day the team says "start". Deadline: **30 November 2026**.
 
 ## Rules for every phase
