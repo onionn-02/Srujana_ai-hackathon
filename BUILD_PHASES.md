@@ -2,7 +2,19 @@
 
 **This is the file we follow for building.** One small phase at a time: frontend first, then backend, then AI, then finishing. The full idea is in [PLAN.md](PLAN.md).
 
-**Status: not started. Next: Phase 0.**
+**Status: Phase 7 built, waiting for the team's check.** Phase 6 approved on 24 Nov. The app: https://claude.ai/artifact/QBzUQ1mnbiHriJHrwAAyyw (code in `app/`). Automatic checks: `node tests/phase7/run.mjs`, `node tests/phase6/run.mjs`, `node tests/phase5/run.mjs`, `node tests/phase4/run.mjs`, `node tests/phase3/run.mjs`, `node tests/phase2/api.test.mjs`, `node tests/phase2/run.mjs`, `node tests/phase1/run.mjs`, `node tests/phase0/run.mjs`.
+
+**Phase 7 frontend review:** every screen and state is checked automatically on a laptop and a phone, in light and dark (`tests/phase7/run.mjs`): one heading and the right tab title, no sideways scrolling, text contrast, tap sizes, a visible focus outline, a name on every button, and very long names and texts. Fixes: each screen has its own tab title; a wrong link says so and offers "Choose an operation"; the nurse and notes screens say "Sample data, not saved"; rows on today's list show an arrow, so phone users can see they open; long allergy lists wrap instead of spilling off the screen; on Case prep the links to the other screens come after the allergy warning; an unexpected problem shows a plain message instead of nothing. Known: with made-up extra-long names, the listening strip at the bottom of the wall display can move below the edge of a TV screen. The demo patients' names fit.
+
+**Phase 6 operation notes:** the draft is written by a plain-code template from confirmed entries only (`app/js/note-template.js`), each line linked to its entry; it is also the no-AI backup for Phase 19. Edit, Sign (second tap, surgeon only, final) and Save PDF work; the app now declares claude.ai's file saving. "Sample operation" is a complete fictional record, marked, with its own note.
+
+**Phase 5 nurse console:** Confirm, Edit, Reject and Add entry work through the endpoint layer (kept in the page's memory until Phase 8). "Add practice suggestions" stands in for listening (Phase 16); practice entries are marked on the phone and the wall. Scan label points to Phase 17 and offers to add the implant by hand.
+
+**Phase 4 theatre display:** the Live view shows only real data (timers honestly say "Not started" until Phase 12). A clearly marked "Sample moment, not live" view shows a fixed mid-operation example for the readability check.
+
+**Built ahead of plan in Phase 3, so nothing on screen is fake:** checklist ticks work through the endpoint layer (kept in the page's memory, not saved until Phase 8), and the allergy warning comes from a real plain-code rule in `app/js/rules.js` (drug-allergy check only; Phase 13 adds the rest).
+
+**Phase 0 approved by the team on 24 Nov, but not fully tested.** Seen working on the laptop: Ask Claude, spoken answer, saving a text file and a PDF. **Still untested:** listening (mic), phone sync, label photo, and every test on the phone. Test them on the Phase 0 page before Phase 11 (sync), Phase 15 (voice) and Phase 17 (label photo). Test page: https://claude.ai/artifact/1VQpBskwRzTH2p2yLNR8JQ (code in `app/phase0/index.html`, automatic checks: `node tests/phase0/run.mjs`).
 
 ## Rules
 
@@ -22,7 +34,7 @@
 | **C. AI** | 14–19 | Questions, listening, label photos, operation note |
 | **D. Finish** | 20–23 | Backups, accuracy, polish, rehearsal |
 
-In our app, "backend" means the artifact's shared database and our own code. There is no separate server.
+In our app, "backend" means the artifact's shared database and our own code. There is no separate server. Screens reach the backend only through the **endpoint layer** (`app/js/api.js`): a fixed list of functions that work like server endpoints. Phase 2 builds it with sample data; Phase 8 switches it to the real database without changing any screen. In a real hospital, only this file would change to talk to the hospital's server.
 
 ---
 
@@ -48,11 +60,27 @@ Everything here uses **sample data**. Buttons may move between screens, but noth
 **Done when:** the team approves the style.
 **Not in this phase:** real screens.
 
-## Phase 2: Dashboard
-**Build:** the home screen, with today's surgeries, time, surgeon, and Ready / Blocked for each.
+## Phase 2: Endpoint layer and dashboard
+**Build first:** the endpoint layer (`app/js/api.js`) with sample data, and automatic checks for it. Every screen from now on gets and changes data only through these endpoints:
+
+| Endpoint | Works like | What it does |
+|---|---|---|
+| `listCases(date)` | `GET /cases` | Today's operations |
+| `getCase(id)` | `GET /cases/:id` | Patient, plan and checklist |
+| `tickChecklist(...)` | `POST /cases/:id/checklist` | Tick an item, with who and when |
+| `updatePlan(...)` | `PATCH /cases/:id/plan` | Change the surgical plan |
+| `addEvent(...)` | `POST /cases/:id/events` | Add a suggested entry |
+| `confirmEvent`, `rejectEvent`, `editEvent` | `PATCH /events/:id` | The nurse's decision |
+| `watchEvents(caseId)` | live `GET /cases/:id/events` | Keep the wall and phone updated |
+| `ask(question)` | `POST /assistant/ask` | AI answer with its source |
+| `saveNote`, `signNote` | `PUT /cases/:id/note` | The operation note |
+
+The exact list is settled in the code during this phase. Endpoints that later phases need (AI, live updates) start as clearly marked stand-ins.
+
+**Then build:** the home screen, with today's surgeries, time, surgeon, and Ready / Blocked for each.
 **You check:** can you tell in 5 seconds which case is blocked?
-**Done when:** the dashboard looks right with 3 sample patients.
-**Not in this phase:** opening a real case.
+**Done when:** the dashboard looks right with 3 sample patients, and the endpoint checks pass.
+**Not in this phase:** opening a real case, or saving anything.
 
 ## Phase 3: Case prep screen
 **Build:** patient summary, pre-op checklist, surgical plan and the antibiotic warning box.
@@ -89,7 +117,7 @@ Everything here uses **sample data**. Buttons may move between screens, but noth
 # Part B: Backend
 
 ## Phase 8: Database and patients
-**Build:** the shared database, 3 made-up patients, the knee replacement template, and a reset button.
+**Build:** switch the endpoint layer from sample data to the shared database, with 3 made-up patients, the knee replacement template, and a reset button. Screens don't change.
 **You check:** open a patient from the dashboard, then reload the page.
 **Done when:** screens show saved data instead of sample data.
 
@@ -208,14 +236,14 @@ This is tight. If we fall behind, cut in this order: spoken case summary, antibi
 
 | Phase | Built | Passed |
 |---|---|---|
-| 0 Feature check | ☐ | ☐ |
-| 1 Style and menu | ☐ | ☐ |
-| 2 Dashboard | ☐ | ☐ |
-| 3 Case prep | ☐ | ☐ |
-| 4 Wall display | ☐ | ☐ |
-| 5 Nurse phone | ☐ | ☐ |
-| 6 Notes screen | ☐ | ☐ |
-| 7 Frontend review | ☐ | ☐ |
+| 0 Feature check | ☑ | Approved 24 Nov; mic, sync, photo and phone untested |
+| 1 Style and menu | ☑ | ☑ Approved 24 Nov |
+| 2 Endpoint layer and dashboard | ☑ | ☑ Approved 24 Nov |
+| 3 Case prep | ☑ | ☑ Approved 24 Nov |
+| 4 Wall display | ☑ | ☑ Approved 24 Nov |
+| 5 Nurse phone | ☑ | ☑ Approved 24 Nov |
+| 6 Notes screen | ☑ | ☑ Approved 24 Nov |
+| 7 Frontend review | ☑ | ☐ |
 | 8 Database and patients | ☐ | ☐ |
 | 9 Checklist and plan | ☐ | ☐ |
 | 10 Event log | ☐ | ☐ |

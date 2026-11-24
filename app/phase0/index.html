@@ -1,0 +1,429 @@
+<title>OT Assistant Feature Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Plain test page (Phase 0): one column of test cards, a results table on top. No final design yet. */
+:root {
+  --bg: #f3f6f5; --card: #ffffff; --fg: #14302b; --muted: #55706a; --line: #d3dedb;
+  --accent: #1b6b5c; --ok: #1f7a4d; --bad: #b3261e; --warn: #8a5a00; --chip: #e7efec;
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1a18; --card: #16241f; --fg: #e4efeb; --muted: #9db4ae; --line: #2a3d38;
+  --accent: #5cc5a8; --ok: #6fd39b; --bad: #ff8a80; --warn: #f0c060; --chip: #213530; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1a18; --card: #16241f; --fg: #e4efeb; --muted: #9db4ae; --line: #2a3d38;
+  --accent: #5cc5a8; --ok: #6fd39b; --bad: #ff8a80; --warn: #f0c060; --chip: #213530; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 16px/1.45 var(--font); margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px }
+main { max-width: 860px; margin: 0 auto; display: grid; gap: 16px }
+h1 { font-size: 26px; margin: 0; text-wrap: balance }
+h2 { font-size: 19px; margin: 0 }
+p { margin: 0 }
+.muted { color: var(--muted) }
+.small { font-size: 14px }
+.banner { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 12px 14px; font-size: 14px }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0 }
+.head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+button, select, input[type=text] { font: inherit; border-radius: 8px; min-height: 44px }
+button { border: 1px solid var(--line); background: var(--chip); color: var(--fg); padding: 8px 14px; cursor: pointer }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600 }
+button:disabled { opacity: .5; cursor: not-allowed }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+input[type=text], select { border: 1px solid var(--line); background: var(--bg); color: var(--fg); padding: 8px 10px; min-width: 0 }
+input[type=text] { flex: 1 1 240px }
+.pill { font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: var(--chip); color: var(--muted); white-space: nowrap }
+.pill.ok { color: var(--ok) } .pill.bad { color: var(--bad) } .pill.warn { color: var(--warn) }
+.out { font: 14px/1.4 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 44px; max-height: 260px; overflow: auto }
+.live { font-size: 20px; min-height: 30px }
+.verdict { border-top: 1px solid var(--line); padding-top: 12px }
+.verdict button[aria-pressed=true] { outline: 2px solid var(--fg) }
+.tablewrap { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { color: var(--muted); font-weight: 600 }
+img.preview { max-height: 220px; border-radius: 8px; border: 1px solid var(--line) }
+.bignum { font: 600 22px var(--mono); font-variant-numeric: tabular-nums }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<main>
+  <header class="card">
+    <div class="head">
+      <h1>OT Assistant feature check</h1>
+      <span class="pill">Phase 0</span>
+    </div>
+    <p class="muted">Tests whether each feature the OT Assistant needs works on this device. Educational prototype. All data here is made up.</p>
+    <div class="row">
+      <label for="device">This device</label>
+      <select id="device">
+        <option value="laptop">Laptop</option>
+        <option value="phone">Phone</option>
+        <option value="laptop2">Laptop 2</option>
+      </select>
+      <span id="platform" class="pill">Connecting…</span>
+    </div>
+  </header>
+
+  <section class="card" aria-labelledby="sumh">
+    <div class="head"><h2 id="sumh">Results</h2><span class="muted small">Shared between devices</span></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Test</th><th>Device</th><th>Automatic</th><th>Your verdict</th><th>Note</th></tr></thead>
+      <tbody id="sumbody"><tr><td colspan="5" class="muted">No results yet. Run a test below.</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <!-- 1 AI -->
+  <section class="card" data-test="ai">
+    <div class="head"><h2>1. Ask Claude</h2><span class="pill" data-status>Not tested</span></div>
+    <p class="muted small">Claude sorts a sentence into a question, an event or chatter.</p>
+    <div class="row">
+      <button data-fill="Giving one gram of vancomycin">Event example</button>
+      <button data-fill="Theatre, is the patient allergic to anything?">Question example</button>
+      <button data-fill="Nice weather today">Chatter example</button>
+    </div>
+    <div class="row">
+      <input type="text" id="aiText" value="Giving one gram of vancomycin" aria-label="Sentence to sort">
+      <button class="primary" id="aiRun">Sort it</button>
+    </div>
+    <div class="out" id="aiOut">Result appears here.</div>
+  </section>
+
+  <!-- 2 Dictation -->
+  <section class="card" data-test="mic">
+    <div class="head"><h2>2. Listening (mic)</h2><span class="pill" data-status>Not tested</span></div>
+    <p class="muted small">Click Start and speak. Try OT phrases, like “Tourniquet on” or “Open the size five femoral”. Watch when it stops by itself.</p>
+    <div class="row">
+      <button class="primary" id="micStart">Start listening</button>
+      <button id="micStop" disabled>Stop</button>
+      <span class="bignum" id="micTime">0:00</span>
+    </div>
+    <p class="live" id="micLive" aria-live="polite"></p>
+    <div class="out" id="micOut">Heard phrases and stop reasons appear here.</div>
+  </section>
+
+  <!-- 3 TTS -->
+  <section class="card" data-test="voice">
+    <div class="head"><h2>3. Spoken answer</h2><span class="pill" data-status>Not tested</span></div>
+    <div class="row">
+      <input type="text" id="ttsText" value="Tourniquet on for 38 minutes, since 10:21." aria-label="Sentence to speak">
+      <button class="primary" id="ttsRun">Speak</button>
+      <button id="ttsStop">Stop</button>
+    </div>
+    <div class="out" id="ttsOut">Status appears here.</div>
+  </section>
+
+  <!-- 4 Sync -->
+  <section class="card" data-test="sync">
+    <div class="head"><h2>4. Laptop and phone sync</h2><span class="pill" data-status>Not tested</span></div>
+    <p class="muted small">Open this page on two devices. Tap the button on one and watch the other.</p>
+    <div class="row">
+      <button class="primary" id="syncTap">Send a tap</button>
+    </div>
+    <p class="live" id="syncLive">No taps yet.</p>
+    <div class="out" id="syncOut">Timing appears here.</div>
+  </section>
+
+  <!-- 5 Photo -->
+  <section class="card" data-test="photo">
+    <div class="head"><h2>5. Label photo</h2><span class="pill" data-status>Not tested</span></div>
+    <p class="muted small">On the phone, this opens the camera. Photograph a printed label, for example “Femoral component, size 6”.</p>
+    <div class="row">
+      <label class="pill" for="photo">Choose or take a photo</label>
+      <input type="file" id="photo" accept="image/*" capture="environment">
+    </div>
+    <img class="preview" id="photoPrev" alt="Photo to read" hidden>
+    <div class="out" id="photoOut">Claude's reading appears here.</div>
+  </section>
+
+  <!-- 6 Save -->
+  <section class="card" data-test="save">
+    <div class="head"><h2>6. Save a note</h2><span class="pill" data-status>Not tested</span></div>
+    <p class="muted small">The operation note will need saving. Printing is blocked inside claude.ai, so this tests saving a text file and a PDF made in the page.</p>
+    <div class="row">
+      <button class="primary" id="saveTxt">Save text file</button>
+      <button class="primary" id="savePdf">Save PDF</button>
+    </div>
+    <div class="out" id="saveOut">Status appears here.</div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const TESTS = { ai: "Ask Claude", mic: "Listening", voice: "Spoken answer", sync: "Sync", photo: "Label photo", save: "Save note" };
+  const cap = {};            // resolved capability namespaces (or null)
+  const tabId = Math.random().toString(36).slice(2, 8);
+  let device = matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600 ? "phone" : "laptop";
+  try { device = localStorage.getItem("ot-device") || device } catch {}
+  $("#device").value = device;
+  $("#device").addEventListener("change", e => { device = e.target.value; try { localStorage.setItem("ot-device", device) } catch {} });
+
+  const log = (el, msg) => { const t = new Date().toLocaleTimeString(); el.textContent = (el.dataset.started ? el.textContent + "\n" : "") + `[${t}] ${msg}`; el.dataset.started = 1; el.scrollTop = el.scrollHeight };
+  const errText = e => e && e.code ? `${e.code}: ${e.message || ""}` : String(e && e.message || e);
+
+  // ---- status + shared results ----
+  // Results are merged into the saved record, never replaced, so a verdict can't wipe an earlier automatic result.
+  // One write at a time per record; clicks made meanwhile are combined. A field named add_<x> appends to the list <x>.
+  const local = {}, pending = {}, busy = {};
+  function setStatus(test, state, detail, extra) {
+    const pill = $(`[data-test="${test}"] [data-status]`);
+    const label = { ok: "Works", bad: "Failed", warn: "Not available", part: "Partly works", run: "Running…" }[state] || "Not tested";
+    pill.textContent = label; pill.className = "pill " + (state === "run" ? "" : state === "part" ? "warn" : state);
+    if (state !== "run") saveResult(test, { auto: label, autoDetail: detail || "", ...(extra || {}) });
+  }
+  function saveResult(test, fields) {
+    const plain = Object.fromEntries(Object.entries(fields).filter(([k]) => !k.startsWith("add_")));
+    local[test] = { ...(local[test] || {}), ...plain };
+    renderSummary();
+    if (!cap.db) return;
+    const id = `${test}-${device}`, p = pending[id] || { test, device };
+    for (const [k, v] of Object.entries(fields)) p[k] = k.startsWith("add_") ? [...(p[k] || []), ...v] : v;
+    pending[id] = p;
+    flush(id);
+  }
+  async function flush(id) {
+    if (busy[id] || !pending[id]) return;
+    busy[id] = true;
+    const fields = pending[id]; delete pending[id];
+    const ref = cap.db.collection("phase0results").doc(id);
+    try {
+      const snap = await ref.get(), old = snap.exists ? snap.data() || {} : {};
+      const data = { at: Date.now() };
+      for (const [k, v] of Object.entries(fields)) {
+        if (k.startsWith("add_")) { const name = k.slice(4); data[name] = [...(Array.isArray(old[name]) ? old[name] : []), ...v].slice(-12) }
+        else data[k] = v;
+      }
+      if (snap.exists) await ref.update(data); else await ref.set(data);
+    } catch (e) {
+      console.warn("result save failed", e);
+      $("#platform").textContent = "A result couldn't be saved: " + errText(e); $("#platform").className = "pill bad";
+    }
+    busy[id] = false;
+    if (pending[id]) flush(id);
+  }
+  let shared = [];
+  function renderSummary() {
+    const rows = cap.db ? shared : Object.entries(local).map(([test, r]) => ({ test, device, ...r }));
+    const body = $("#sumbody");
+    if (!rows.length) { body.innerHTML = '<tr><td colspan="5" class="muted">No results yet. Run a test below.</td></tr>'; return }
+    const order = Object.keys(TESTS);
+    rows.sort((a, b) => order.indexOf(a.test) - order.indexOf(b.test) || String(a.device).localeCompare(b.device));
+    body.replaceChildren(...rows.map(r => {
+      const tr = document.createElement("tr");
+      [TESTS[r.test] || r.test, r.device, r.auto ? r.auto + (r.autoDetail && r.autoDetail.toLowerCase() !== r.auto.toLowerCase() ? " · " + r.autoDetail : "") : "—", r.manual || "—", r.note || ""].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.append(td) });
+      return tr;
+    }));
+  }
+
+  // verdict block on every card
+  document.querySelectorAll("[data-test]").forEach(card => {
+    const test = card.dataset.test;
+    const box = document.createElement("div");
+    box.className = "verdict row";
+    box.innerHTML = `<span class="small muted">Your verdict:</span>
+      <button data-v="Works" aria-pressed="false">Works</button>
+      <button data-v="Doesn't work" aria-pressed="false">Doesn't work</button>
+      <input type="text" id="note-${test}" placeholder="Note (optional)" aria-label="Note for ${TESTS[test]}">`;
+    card.append(box);
+    box.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+      saveResult(test, { manual: b.dataset.v, note: $(`#note-${test}`).value.trim() });
+    }));
+    $(`#note-${test}`).addEventListener("change", e => saveResult(test, { note: e.target.value.trim() }));
+  });
+
+  // ---- 1 AI ----
+  document.querySelectorAll("[data-fill]").forEach(b => b.addEventListener("click", () => { $("#aiText").value = b.dataset.fill }));
+  $("#aiRun").addEventListener("click", async () => {
+    const out = $("#aiOut"), text = $("#aiText").value.trim();
+    if (!text) return;
+    if (!cap.sample) { log(out, "Ask Claude is not available on this view."); setStatus("ai", "warn", "not available"); return }
+    setStatus("ai", "run"); $("#aiRun").disabled = true;
+    const t0 = performance.now();
+    try {
+      const r = await cap.sample.json(
+`You sort one sentence heard in an operating theatre. Reply with JSON only, no other text:
+{"kind":"question"|"event"|"chatter","summary":string,"event":null|{"type":"drug"|"tourniquet"|"implant"|"count"|"step"|"other","detail":string}}
+Rules: "question" means someone asks the assistant something. "event" means a clinical action happened or is happening now. Otherwise "chatter". Do not invent details that are not in the sentence.
+Sentence: ${JSON.stringify(text)}`, { modelTier: "quick", cache: false });
+      const ms = Math.round(performance.now() - t0);
+      log(out, `${JSON.stringify(r, null, 2)}\nTook ${(ms / 1000).toFixed(1)} s`);
+      const good = r && ["question", "event", "chatter"].includes(r.kind);
+      setStatus("ai", good ? "ok" : "bad", good ? `${r.kind}, ${(ms / 1000).toFixed(1)} s` : "unexpected reply", { add_tries: [`${text} → ${good ? r.kind : "?"}`] });
+    } catch (e) { log(out, "Error: " + errText(e)); setStatus("ai", e && e.code === "not_granted" ? "warn" : "bad", errText(e)) }
+    finally { $("#aiRun").disabled = false }
+  });
+
+  // ---- 2 Dictation ----
+  let micT0 = 0, micTimer = 0, phrases = 0, micSession = false, sessionHeard = [], sawPartial = false;
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  $("#micStart").addEventListener("click", () => {
+    const d = cap.dictation, out = $("#micOut");
+    if (!d) { log(out, "Dictation is not available here. It needs Chrome or the Claude desktop app."); setStatus("mic", "warn", "not available"); return }
+    d.start().catch(e => { log(out, "Could not start: " + errText(e)); setStatus("mic", e.code === "not_granted" || e.code === "unavailable" ? "warn" : "bad", errText(e)) });
+  });
+  $("#micStop").addEventListener("click", () => { cap.dictation && cap.dictation.stop().catch(() => {}) });
+
+  // ---- 3 TTS ----
+  $("#ttsRun").addEventListener("click", () => {
+    const t = cap.tts, out = $("#ttsOut");
+    if (!t) { log(out, "Spoken voice is not available here (it isn't offered in Safari or the mobile apps)."); setStatus("voice", "warn", "not available"); return }
+    const t0 = performance.now();
+    t.speak($("#ttsText").value.trim() || "Test")
+      .then(r => {
+        const s = (r.playedMs / 1000).toFixed(1);
+        log(out, `Finished speaking (${s} s of audio, ${((performance.now() - t0) / 1000).toFixed(1)} s total).`);
+        setStatus("voice", r.playedMs > 0 ? "ok" : "part", r.playedMs > 0 ? `${s} s of audio played` : "finished, but no audio played");
+      })
+      .catch(e => { log(out, "Error: " + errText(e)); setStatus("voice", ["not_granted", "unavailable"].includes(e.code) ? "warn" : "bad", errText(e)) });
+  });
+  $("#ttsStop").addEventListener("click", () => { cap.tts && cap.tts.stop().catch(() => {}) });
+
+  // ---- 4 Sync ----
+  let tapSent = 0, tapCount = 0;
+  $("#syncTap").addEventListener("click", async () => {
+    const out = $("#syncOut"), btn = $("#syncTap");
+    if (!cap.db) { log(out, "The shared database is not available here."); setStatus("sync", "warn", "not available"); return }
+    btn.disabled = true; tapSent = performance.now(); tapCount++;
+    try { await cap.db.doc("phase0sync/latest").set({ from: device, tab: tabId, at: Date.now(), n: tapCount }) }
+    catch (e) { tapSent = 0; log(out, "Error: " + errText(e)); setStatus("sync", "bad", errText(e)) }
+    finally { btn.disabled = false }
+  });
+
+  // ---- 5 Photo ----
+  function shrink(file, max = 1600) {
+    return new Promise((res, rej) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const k = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(b => b ? res(b) : rej(new Error("could not resize")), "image/jpeg", 0.85);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("could not open the image")) };
+      img.src = url;
+    });
+  }
+  $("#photo").addEventListener("change", async e => {
+    const f = e.target.files && e.target.files[0], out = $("#photoOut");
+    if (!f) return;
+    const prev = $("#photoPrev"); prev.src = URL.createObjectURL(f); prev.hidden = false;
+    if (!cap.sample) { log(out, "Ask Claude is not available on this view."); setStatus("photo", "warn", "not available"); return }
+    setStatus("photo", "run");
+    try {
+      const lim = await cap.sample.limits();
+      if (!lim.images) { log(out, "Photos can't be sent to Claude on this account or view."); setStatus("photo", "warn", "images not offered"); return }
+      const blob = await shrink(f);
+      log(out, `Photo ${(f.size / 1e6).toFixed(1)} MB, sent as ${(blob.size / 1e6).toFixed(2)} MB. Reading…`);
+      const t0 = performance.now();
+      const r = await cap.sample.json(
+`Read the product label in this photo. Reply with JSON only:
+{"item":string|null,"size":string|null,"other_text":string|null}
+Copy only what is printed. Use null for anything you cannot read clearly. Never guess.`, { images: [blob], modelTier: "quick", cache: false });
+      log(out, `${JSON.stringify(r, null, 2)}\nTook ${((performance.now() - t0) / 1000).toFixed(1)} s`);
+      setStatus("photo", r && (r.item || r.size) ? "ok" : "bad", r && (r.item || r.size) ? `${r.item || "?"}, size ${r.size || "?"}` : "nothing read");
+    } catch (err) { log(out, "Error: " + errText(err)); setStatus("photo", err && ["not_granted", "images_unavailable"].includes(err.code) ? "warn" : "bad", errText(err)) }
+  });
+
+  // ---- 6 Save ----
+  const NOTE = `OPERATION NOTE (TEST, MADE-UP PATIENT)\nPatient: Ravi Kumar, 64 M (fictional)\nProcedure: Left total knee replacement\nVancomycin 1 g IV at 09:40\nTourniquet on 10:21\nEducational prototype. Not for patient care.\n`;
+  const saved = { txt: "not tried", pdf: "not tried" };
+  function saveStatus() {
+    const vals = [saved.txt, saved.pdf], good = s => s === "saved" || s === "delivered";
+    const state = vals.every(good) ? "ok" : vals.includes("failed") ? "bad" : "part";
+    setStatus("save", state, `TXT ${saved.txt} · PDF ${saved.pdf}`);
+  }
+  async function save(kind) {
+    const out = $("#saveOut");
+    if (!cap.downloads) { log(out, "Saving files is not available on this view."); setStatus("save", "warn", "not available"); return }
+    try {
+      let data, filename;
+      if (kind === "txt") { data = NOTE; filename = "test-operation-note.txt" }
+      else {
+        if (!window.jspdf) {
+          log(out, "Loading the PDF maker…");
+          await new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = res; s.onerror = () => rej(new Error("PDF maker could not load")); document.head.append(s) });
+        }
+        const doc = new window.jspdf.jsPDF(); doc.setFontSize(12);
+        NOTE.split("\n").forEach((line, i) => doc.text(line, 15, 20 + i * 8));
+        data = doc.output("blob"); filename = "test-operation-note.pdf";
+      }
+      const r = await cap.downloads.save({ filename, data });
+      log(out, `${filename}: ${r.status}`);
+      saved[kind] = r.status; saveStatus();
+    } catch (e) { log(out, "Error: " + errText(e)); saved[kind] = e && e.code === "declined" ? "declined" : "failed"; saveStatus() }
+  }
+  $("#saveTxt").addEventListener("click", () => save("txt"));
+  $("#savePdf").addEventListener("click", () => save("pdf"));
+
+  // ---- connect capabilities ----
+  const use = name => (window.claude && window.claude.use ? window.claude.use(name).catch(() => null) : Promise.resolve(null));
+  Promise.all(["sample", "dictation", "tts", "db", "downloads"].map(n => use(n).then(v => { cap[n] = v; return [n, !!v] }))).then(list => {
+    const on = list.filter(x => x[1]).map(x => x[0]);
+    $("#platform").textContent = on.length ? `Connected: ${on.join(", ")}` : "Not inside claude.ai: features off";
+    $("#platform").className = "pill " + (on.length === 5 ? "ok" : on.length ? "warn" : "bad");
+
+    const d = cap.dictation;
+    if (d) {
+      d.onPartial(({ text }) => { sawPartial = true; $("#micLive").textContent = text });
+      d.onFinal(({ text }) => {
+        phrases++; sessionHeard.push(text); $("#micLive").textContent = "";
+        log($("#micOut"), `Heard: "${text}"`);
+        const p = $('[data-test="mic"] [data-status]'); p.textContent = `Heard ${phrases}`; p.className = "pill ok";
+      });
+      // Every listening session ends with a saved result: what was heard, how long it listened, and why it stopped.
+      d.onState(({ state, reason }) => {
+        const on = state === "starting" || state === "listening";
+        $("#micStart").disabled = state !== "idle"; $("#micStop").disabled = !on;
+        if (on && !micSession) {
+          micSession = true; micT0 = Date.now(); clearInterval(micTimer);
+          micTimer = setInterval(() => { $("#micTime").textContent = fmt((Date.now() - micT0) / 1000) }, 250);
+        }
+        if (state === "idle" && micSession) {
+          micSession = false; clearInterval(micTimer); micTimer = 0;
+          const took = fmt((Date.now() - micT0) / 1000), why = reason || "unknown";
+          log($("#micOut"), `Stopped after ${took}. Reason: ${why}`);
+          const session = `last session ${sessionHeard.length} phrase(s) in ${took}, stopped: ${why}`;
+          if (phrases) setStatus("mic", "ok", `${phrases} phrase(s) heard, ${session}`, { add_heard: sessionHeard });
+          else if (["not_granted", "unavailable", "dismissed"].includes(reason)) setStatus("mic", "warn", why);
+          else setStatus("mic", sawPartial ? "part" : "bad", `${sawPartial ? "only rough text" : "nothing heard"}, ${session}`);
+          sessionHeard = []; sawPartial = false;
+        }
+      });
+    }
+    if (cap.tts) cap.tts.onState(({ state, reason }) => { if (state === "idle" && reason && reason !== "completed") log($("#ttsOut"), `Stopped: ${reason}`) });
+
+    if (cap.db) {
+      cap.db.collection("phase0results").onSnapshot(snap => { shared = snap.docs.map(x => x.data()); renderSummary() }, e => console.warn(e));
+      // The first snapshot is only the starting point: a tap made before this page opened never counts as a pass.
+      // Each open page has its own id, so its own taps are told apart even if two devices share a name.
+      let first = true, lastKey = "", echoSaved = false, recvSaved = false;
+      const opened = Date.now();
+      cap.db.doc("phase0sync/latest").onSnapshot(snap => {
+        if (snap.metadata.hasPendingWrites) return;
+        const v = snap.exists ? snap.data() : null, key = v ? `${v.tab}-${v.n}-${v.at}` : "";
+        const earlier = () => { $("#syncLive").textContent = `Earlier tap from ${v.from} at ${new Date(v.at).toLocaleTimeString()}. Waiting for a new one.` };
+        if (first) { first = false; lastKey = key; if (v) earlier(); return }
+        if (!v || key === lastKey) return;
+        lastKey = key;
+        if (v.at < opened - 60000) { earlier(); return }
+        $("#syncLive").textContent = `Last tap from ${v.from} at ${new Date(v.at).toLocaleTimeString()} (#${v.n})`;
+        if (v.tab === tabId) {
+          if (!tapSent) return;
+          const ms = Math.round(performance.now() - tapSent); tapSent = 0;
+          log($("#syncOut"), `Saved and confirmed in ${ms} ms. Now check the other device.`);
+          if (!echoSaved) { echoSaved = true; setStatus("sync", "ok", `sent, confirmed in ${ms} ms`) }
+        } else {
+          const lag = Math.max(0, Math.round((Date.now() - v.at) / 100) / 10);
+          log($("#syncOut"), `Received a tap from ${v.from}, about ${lag} s after it was sent (if both clocks agree).`);
+          if (v.from === device) log($("#syncOut"), `Both devices are set to "${$("#device").selectedOptions[0].text}". Change "This device" on one of them.`);
+          if (!recvSaved) { recvSaved = true; setStatus("sync", "ok", `received from ${v.from}, about ${lag} s`) }
+        }
+      }, e => { log($("#syncOut"), "Sync error: " + errText(e)); setStatus("sync", "bad", errText(e)) });
+    }
+  });
+})();
+</script>

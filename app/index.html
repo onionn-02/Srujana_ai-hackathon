@@ -1,0 +1,366 @@
+<title>OT Assistant</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2.5" width="8" height="4" rx="1"/><path d="M16 4.5h2a2 2 0 0 1 2 2V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2" width="11" height="20" rx="2"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h7M8.5 9h2"/></symbol>
+  <symbol id="i-swatch" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 16v-4.5M12 8h.01"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M18.5 10.5v.5a6.5 6.5 0 0 1-13 0v-.5M12 17.5v4"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7.5V5a2 2 0 0 1 2-2h2.5M16.5 3H19a2 2 0 0 1 2 2v2.5M21 16.5V19a2 2 0 0 1-2 2h-2.5M7.5 21H5a2 2 0 0 1-2-2v-2.5M7.5 8v8M10.5 8v8M14 8v8M16.5 8v8"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7.5 14h9"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20.5h8.5M16.5 3.5a2.1 2.1 0 0 1 3 3L7.5 18.5l-4 1 1-4z"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
+  <symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="shell" id="shell" data-chrome="app" data-menu="closed">
+  <header class="topbar">
+    <span class="brand">OT Assistant</span>
+    <button class="btn btn-quiet" type="button" data-menu-toggle aria-controls="rail" aria-expanded="false">
+      <svg class="icon i-open" aria-hidden="true"><use href="#i-menu"/></svg><svg class="icon i-shut" aria-hidden="true"><use href="#i-close"/></svg>Screens
+    </button>
+  </header>
+
+  <button class="btn float-menu" type="button" data-menu-toggle aria-controls="rail" aria-expanded="false">
+    <svg class="icon i-open" aria-hidden="true"><use href="#i-menu"/></svg><svg class="icon i-shut" aria-hidden="true"><use href="#i-close"/></svg>Screens
+  </button>
+
+  <aside class="rail" id="rail" aria-label="App menu">
+    <div class="rail-brand">
+      <span class="brand">OT Assistant</span>
+      <span class="chip chip-caution">Fictional patients</span>
+    </div>
+    <nav class="nav" id="nav" aria-label="Screens">
+      <p class="nav-group">Screens</p>
+      <a href="#today" data-route="today"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Today's list</span></a>
+      <a href="#prep" data-route="prep"><svg class="icon" aria-hidden="true"><use href="#i-clipboard"/></svg><span>Case prep</span></a>
+      <a href="#theatre" data-route="theatre"><svg class="icon" aria-hidden="true"><use href="#i-monitor"/></svg><span>Theatre display</span></a>
+      <a href="#nurse" data-route="nurse"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>Nurse console</span></a>
+      <a href="#notes" data-route="notes"><svg class="icon" aria-hidden="true"><use href="#i-note"/></svg><span>Operation notes</span></a>
+      <p class="nav-group">Design</p>
+      <a href="#style" data-route="style"><svg class="icon" aria-hidden="true"><use href="#i-swatch"/></svg><span>Style guide</span></a>
+    </nav>
+    <p class="rail-foot">Educational prototype. Not for clinical use.</p>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main id="main" tabindex="-1">
+    <div class="screen" id="screen"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" data-show="false"></div>
+
+<template id="tpl-style">
+  <header class="screen-head">
+    <div>
+      <h1 tabindex="-1">Style guide</h1>
+      <p class="lede">The colours, type and parts every screen is built from. All patient details are fictional, and nothing on this page is saved.</p>
+    </div>
+    <div class="segmented" role="group" aria-label="Colour theme">
+      <button type="button" data-theme-choice="system" aria-pressed="true">Match device</button>
+      <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <section class="sg" aria-labelledby="sg-band">
+    <h2 id="sg-band">Patient band</h2>
+    <p class="sg-note">Sits at the top of every case screen, like the patient's wristband. Allergy status always shows one of three states, so an empty space never hides a missing check.</p>
+    <div class="stack">
+      <div class="band">
+        <div class="band-id">
+          <span class="band-name">Ravi Kumar</span>
+          <dl class="band-facts">
+            <div><dt>Age</dt><dd>64</dd></div>
+            <div><dt>Sex</dt><dd>Male</dd></div>
+            <div><dt>Demo ID</dt><dd class="data">1001</dd></div>
+          </dl>
+          <span class="band-proc"><span class="side">LEFT</span>Total knee replacement</span>
+        </div>
+        <div class="band-allergy is-allergy">
+          <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+          <span><strong>Allergy: penicillin</strong><span>Anaphylaxis</span></span>
+        </div>
+      </div>
+      <div class="band">
+        <div class="band-id">
+          <span class="band-name">Meera Iyer</span>
+          <dl class="band-facts">
+            <div><dt>Age</dt><dd>58</dd></div>
+            <div><dt>Sex</dt><dd>Female</dd></div>
+            <div><dt>Demo ID</dt><dd class="data">1002</dd></div>
+          </dl>
+          <span class="band-proc"><span class="side">RIGHT</span>Total hip replacement</span>
+        </div>
+        <div class="band-allergy is-none">
+          <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+          <span><strong>No known allergies</strong><span>Checked at admission</span></span>
+        </div>
+      </div>
+      <div class="band">
+        <div class="band-id">
+          <span class="band-name">Arjun Rao</span>
+          <dl class="band-facts">
+            <div><dt>Age</dt><dd>41</dd></div>
+            <div><dt>Sex</dt><dd>Male</dd></div>
+            <div><dt>Demo ID</dt><dd class="data">1003</dd></div>
+          </dl>
+          <span class="band-proc">Keyhole gallbladder removal</span>
+        </div>
+        <div class="band-allergy is-unknown">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <span><strong>Allergies not recorded</strong><span>Ask before giving drugs</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-colour">
+    <h2 id="sg-colour">Colour means something</h2>
+    <p class="sg-note">Patient monitors show high-priority alarms in red, medium in yellow and low in cyan (the IEC 60601-1-8 alarm standard). Our screens follow the same rule, so a colour means the same thing on the wall as on the monitor. Teal, the colour of surgical drapes, marks the main action and anything confirmed.</p>
+    <ul class="swatches">
+      <li class="swatch"><i style="background: var(--alarm)"></i><div><b>Red: high priority</b><span>Allergy, blocked case, drug clash</span></div></li>
+      <li class="swatch"><i style="background: var(--caution)"></i><div><b>Amber: medium priority</b><span>Suggested entry, timer reminder</span></div></li>
+      <li class="swatch"><i style="background: var(--advisory)"></i><div><b>Cyan: advisory</b><span>Reminders and information</span></div></li>
+      <li class="swatch"><i style="background: var(--action)"></i><div><b>Teal: confirmed</b><span>Main action, confirmed entry, ready case</span></div></li>
+      <li class="swatch"><i style="background: var(--ink)"></i><div><b>Ink</b><span>Text and the operating side</span></div></li>
+      <li class="swatch"><i style="background: var(--paper)"></i><div><b>Paper</b><span>Page background</span></div></li>
+    </ul>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-type">
+    <h2 id="sg-type">Type</h2>
+    <p class="sg-note">Atkinson Hyperlegible was designed so characters that look alike are easy to tell apart. In drug doses and patient details, a misread 1 or 0 can cause harm.</p>
+    <p class="glyphs" aria-label="Look-alike characters: one, lower-case L, capital I, zero, capital O">1 l I 0 O</p>
+    <div class="type-list">
+      <div class="type-row"><span>Theatre display timer</span><span class="t-wall">38<small>min</small></span></div>
+      <div class="type-row"><span>Screen title</span><span class="t-title">Case prep</span></div>
+      <div class="type-row"><span>Section heading</span><span class="t-head">Surgical plan</span></div>
+      <div class="type-row"><span>Body text</span><span>Femoral component size 5, tibial component size 4, insert 10 mm.</span></div>
+      <div class="type-row"><span>Small text</span><span class="t-small">Ticked by the circulating nurse at 09:12</span></div>
+      <div class="type-row"><span>Times and doses</span><span class="data">09:40&nbsp;&nbsp;Vancomycin 1 g IV</span></div>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-words">
+    <h2 id="sg-words">How we write clinical details</h2>
+    <ul class="rules">
+      <li><b>24-hour times.</b> 09:40, not 9:40 am.</li>
+      <li><b>Doses with a space before the unit and no trailing zero.</b> 1 g and 0.5 mg, never 1.0 g or .5 mg.</li>
+      <li><b>The operating side in full capitals.</b> LEFT or RIGHT, never L or R.</li>
+      <li><b>Every AI answer shows its source.</b> If something isn't recorded, the answer says "Not in the record".</li>
+      <li><b>Fictional patients only.</b> Every name and ID on these screens is made up.</li>
+    </ul>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-buttons">
+    <h2 id="sg-buttons">Buttons</h2>
+    <p class="sg-note">Each button says what it does. Teal marks the main action in an area. On the nurse's phone, buttons are 56 pixels tall so they are easy to hit with gloves on.</p>
+    <div class="row">
+      <button class="btn btn-primary" type="button" data-sample="Confirm"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirm</button>
+      <button class="btn" type="button" data-sample="Edit"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Edit</button>
+      <button class="btn" type="button" data-sample="Reject"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>Reject</button>
+      <button class="btn btn-quiet" type="button" data-sample="Cancel">Cancel</button>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary btn-lg" type="button" data-sample="Confirm"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirm</button>
+      <button class="btn btn-lg" type="button" data-sample="Edit"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Edit</button>
+      <button class="btn btn-lg" type="button" data-sample="Reject"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>Reject</button>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" type="button" disabled>Confirm</button>
+      <button class="btn" type="button" aria-busy="true" aria-disabled="true"><span class="spinner" aria-hidden="true"></span>Asking Claude…</button>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-chips">
+    <h2 id="sg-chips">Status labels</h2>
+    <p class="sg-note">Each label has an icon and a word, so colour is never the only signal.</p>
+    <div class="row">
+      <span class="chip chip-ok"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Ready</span>
+      <span class="chip chip-alarm"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>Blocked</span>
+      <span class="chip chip-caution"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Suggested</span>
+      <span class="chip chip-ok"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span>
+      <span class="chip chip-muted"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>Rejected</span>
+      <span class="chip chip-caution"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>Not recorded</span>
+    </div>
+    <div class="row">
+      <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg>Heard</span>
+      <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-scan"/></svg>Scanned</span>
+      <span class="chip"><svg class="icon" aria-hidden="true"><use href="#i-keyboard"/></svg>Typed</span>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-alerts">
+    <h2 id="sg-alerts">Alerts</h2>
+    <p class="sg-note">Alerts stay on screen until someone deals with them. They never pop up over the work.</p>
+    <div class="stack">
+      <div class="alert alert-high">
+        <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+        <div class="alert-text"><b>Allergy clash</b><span>Cefazolin is in the plan. This patient has a penicillin allergy with anaphylaxis. Review possible cross-reaction.</span></div>
+        <button class="btn" type="button" data-sample="Review plan">Review plan</button>
+      </div>
+      <div class="alert alert-medium">
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <div class="alert-text"><b>Tourniquet on for 60 minutes</b><span>On since 10:21. Next reminder at 90 minutes.</span></div>
+        <button class="btn" type="button" data-sample="Acknowledge">Acknowledge</button>
+      </div>
+      <div class="alert alert-advisory">
+        <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+        <div class="alert-text"><b>Count before closing</b><span>Swab and instrument count is due before the wound is closed.</span></div>
+        <button class="btn" type="button" data-sample="Start count">Start count</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-record">
+    <h2 id="sg-record">Live record</h2>
+    <p class="sg-note">What the assistant hears becomes a suggested entry. Nothing joins the record until a person confirms it. Try the buttons on the last entry; this sample resets when you leave the page.</p>
+    <ol class="events">
+      <li class="event">
+        <time class="data" datetime="09:40">09:40</time>
+        <div class="event-what"><b>Vancomycin 1 g IV</b><small>Heard, confirmed by the circulating nurse</small></div>
+        <span class="chip chip-ok"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span>
+      </li>
+      <li class="event">
+        <time class="data" datetime="10:21">10:21</time>
+        <div class="event-what"><b>Tourniquet on, 250 mmHg</b><small>Heard, confirmed by the circulating nurse</small></div>
+        <span class="chip chip-ok"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirmed</span>
+      </li>
+      <li class="event" data-demo-event>
+        <time class="data" datetime="10:58">10:58</time>
+        <div class="event-what"><b>Femoral component size 5 opened</b><small>Heard: “open the size five femoral”</small></div>
+        <span class="chip chip-caution" data-demo-status><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Suggested</span>
+        <div class="event-actions" data-demo-actions>
+          <button class="btn btn-primary" type="button" data-act="confirm"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Confirm</button>
+          <button class="btn" type="button" data-act="edit"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Edit</button>
+          <button class="btn" type="button" data-act="reject"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>Reject</button>
+        </div>
+        <div class="event-actions" data-demo-undo hidden>
+          <button class="btn btn-quiet" type="button" data-act="undo"><svg class="icon" aria-hidden="true"><use href="#i-undo"/></svg>Undo</button>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-checks">
+    <h2 id="sg-checks">Checklist</h2>
+    <p class="sg-note">Each tick records who ticked it and when. The whole row can be tapped.</p>
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="sg-c1" checked data-who="the circulating nurse at 09:12"><span>Patient identity confirmed<small>Ticked by the circulating nurse at 09:12</small></span></label>
+      <label class="check"><input type="checkbox" id="sg-c2" checked data-who="the surgeon at 09:14"><span>Site marked: LEFT knee<small>Ticked by the surgeon at 09:14</small></span></label>
+      <label class="check"><input type="checkbox" id="sg-c3"><span>Anaesthesia safety check complete<small>Not ticked</small></span></label>
+      <label class="check"><input type="checkbox" id="sg-c4"><span>Known allergy discussed with the team<small>Not ticked</small></span></label>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-fields">
+    <h2 id="sg-fields">Fields</h2>
+    <div class="fields">
+      <div class="field">
+        <label for="sg-size">Femoral component size</label>
+        <input id="sg-size" type="text" inputmode="numeric" value="5" aria-describedby="sg-size-help">
+        <span class="help" id="sg-size-help">From the surgical plan</span>
+      </div>
+      <div class="field">
+        <label for="sg-drug">Preventive antibiotic</label>
+        <select id="sg-drug" aria-describedby="sg-drug-help">
+          <option>Vancomycin 1 g IV</option>
+          <option>Cefazolin 2 g IV</option>
+          <option>Clindamycin 600 mg IV</option>
+        </select>
+        <span class="help" id="sg-drug-help">Checked against the patient's allergies</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sg" aria-labelledby="sg-theatre">
+    <h2 id="sg-theatre">Theatre display style</h2>
+    <p class="sg-note">The wall screen is always dark, like the monitors beside it, with numbers big enough to read from 3 metres. A timer turns amber at its first reminder.</p>
+    <div class="theatre theatre-sample">
+      <div class="band">
+        <div class="band-id">
+          <span class="band-name">Ravi Kumar</span>
+          <dl class="band-facts">
+            <div><dt>Age</dt><dd>64</dd></div>
+            <div><dt>Blood</dt><dd>B+, 2 units ready</dd></div>
+          </dl>
+          <span class="band-proc"><span class="side">LEFT</span>Total knee replacement</span>
+        </div>
+        <div class="band-allergy is-allergy">
+          <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+          <span><strong>Allergy: penicillin</strong><span>Anaphylaxis</span></span>
+        </div>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <span class="tile-label">Tourniquet</span>
+          <span class="tile-value">38<small>min</small></span>
+          <span class="tile-sub">On since 10:21</span>
+          <div class="meter" role="img" aria-label="38 of 120 minutes, reminders at 60 and 90"><i style="width: 31.7%"></i><b style="left: 50%"></b><b style="left: 75%"></b></div>
+          <div class="meter-scale" aria-hidden="true"><span style="left: 0">0</span><span style="left: 50%">60</span><span style="left: 75%">90</span><span>120</span></div>
+        </div>
+        <div class="tile is-caution">
+          <span class="tile-label">Tourniquet</span>
+          <span class="tile-value">62<small>min</small></span>
+          <span class="tile-sub">Past the 60-minute reminder</span>
+          <div class="meter" role="img" aria-label="62 of 120 minutes, reminders at 60 and 90"><i style="width: 51.7%"></i><b style="left: 50%"></b><b style="left: 75%"></b></div>
+          <div class="meter-scale" aria-hidden="true"><span style="left: 0">0</span><span style="left: 50%">60</span><span style="left: 75%">90</span><span>120</span></div>
+        </div>
+        <div class="tile">
+          <span class="tile-label">Since incision</span>
+          <span class="tile-value">31<small>min</small></span>
+          <span class="tile-sub">Incision at 10:28</span>
+        </div>
+        <div class="tile">
+          <span class="tile-label">Anaesthesia</span>
+          <span class="tile-value">52<small>min</small></span>
+          <span class="tile-sub">Started at 10:07</span>
+        </div>
+      </div>
+      <div class="answer">
+        <q>Which implant size did we plan?</q>
+        <p class="answer-text">Femoral 5, tibial 4, insert 10 mm</p>
+        <p class="answer-source">Source: surgical plan</p>
+      </div>
+      <div class="listening">
+        <span class="dot" aria-hidden="true"></span>
+        <b>Listening</b>
+        <q>okay, open the size five femoral</q>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script src="js/data.js"></script>
+<script src="js/rules.js"></script>
+<script src="js/note-template.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/screens/today.js"></script>
+<script src="js/screens/prep.js"></script>
+<script src="js/screens/theatre.js"></script>
+<script src="js/screens/nurse.js"></script>
+<script src="js/screens/notes.js"></script>
+<script src="js/app.js"></script>
